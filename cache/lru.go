@@ -61,6 +61,9 @@ func (itr *iterator) HasNext() bool {
 }
 
 func (itr *iterator) Next() *list.Element {
+	if !itr.HasNext() {
+		panic("Called next on iterator without value")
+	}
 	next := itr.nextItem
 	itr.prepareNext()
 	return next
@@ -71,7 +74,11 @@ func (itr *iterator) Close() {
 }
 
 func (itr *iterator) prepareNext() {
-	itr.nextItem = itr.lru.valueList.Front().Next()
+	if itr.nextItem == nil && itr.lru.curSize != 0 {
+		itr.nextItem = itr.lru.valueList.Front()
+		return
+	}
+	itr.nextItem = itr.nextItem.Next()
 }
 
 func NewLRU(maxSize int32) *lru {
