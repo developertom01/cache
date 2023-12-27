@@ -2,7 +2,6 @@ package cache
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -11,14 +10,13 @@ func TestLRU(t *testing.T) {
 	lru := NewLRU(100)
 
 	key := "tom"
-	entry := NewEntry(key, 12345, time.Now())
-	lru.Put(key, *entry)
-	expected := lru.Get(key)
-	assert.Equal(t, *expected, *entry)
+	value := 123
+	lru.Put(key, value)
+	expected := lru.Get(key).value.(int)
+	assert.Equal(t, expected, value)
 	assert.EqualValues(t, 1, lru.Size())
 
 	lru.Delete(key)
-	expected = lru.Get(key)
 	assert.EqualValues(t, 0, lru.Size())
 
 }
@@ -39,8 +37,7 @@ func TestLRUMaxSize(t *testing.T) {
 	)
 
 	for k, v := range values {
-		entry := NewEntry(k, v, time.Now())
-		lru.Put(k, *entry)
+		lru.Put(k, v)
 	}
 	assert.Equal(t, maxSize, lru.Size())
 
@@ -60,34 +57,33 @@ func TestLRUIterator(t *testing.T) {
 		}
 	)
 
-	var entries []entry
+	var entries []string
 	for k, v := range values {
-		entry := NewEntry(k, v, time.Now())
-		entries = append(entries, *entry)
-		lru.Put(k, *entry)
+		entries = append(entries, v)
+		lru.Put(k, v)
 	}
 	itr := lru.Iterator()
 	defer itr.Close()
 	cur := itr.Next().Value.(entry)
-	assert.Equal(t, entries[6], cur)
+	assert.Equal(t, entries[6], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[5], cur)
+	assert.Equal(t, entries[5], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[4], cur)
+	assert.Equal(t, entries[4], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[3], cur)
+	assert.Equal(t, entries[3], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[2], cur)
+	assert.Equal(t, entries[2], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[1], cur)
+	assert.Equal(t, entries[1], cur.value)
 
 	cur = itr.Next().Value.(entry)
-	assert.Equal(t, entries[0], cur)
+	assert.Equal(t, entries[0], cur.value)
 
 	assert.Panics(t, func() { itr.Next() })
 

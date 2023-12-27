@@ -105,9 +105,10 @@ func (c *lru) Get(key any) *entry {
 	return &val
 }
 
-func (c *lru) Put(key any, value entry) {
+func (c *lru) Put(key any, value any) {
 	c.mut.Lock()
 	defer c.mut.Unlock()
+	entryValue := *NewEntry(key, value, time.Now())
 	if c.curSize == c.maxSize {
 		//Evict least used
 		lastEl := c.valueList.Back()
@@ -116,7 +117,7 @@ func (c *lru) Put(key any, value entry) {
 		c.valueList.Remove(lastEl)
 		c.curSize--
 	}
-	element := c.valueList.PushFront(value)
+	element := c.valueList.PushFront(entryValue)
 	c.valuesKeyMap[key] = element
 	c.curSize++
 }
