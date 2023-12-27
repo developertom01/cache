@@ -27,15 +27,16 @@ func TestLRUMaxSize(t *testing.T) {
 	var (
 		maxSize = int32(5)
 		lru     = NewLRU(maxSize)
-		values  = make(map[string]string)
+		values  = map[string]string{
+			"key1": "value1",
+			"key2": "value2",
+			"key3": "value3",
+			"key4": "value4",
+			"key5": "value5",
+			"key6": "value6",
+			"key7": "value7",
+		}
 	)
-	values["key1"] = "value1"
-	values["key2"] = "value2"
-	values["key3"] = "value3"
-	values["key4"] = "value4"
-	values["key5"] = "value5"
-	values["key6"] = "value6"
-	values["key7"] = "value7"
 
 	for k, v := range values {
 		entry := NewEntry(k, v, time.Now())
@@ -48,15 +49,17 @@ func TestLRUIterator(t *testing.T) {
 	var (
 		maxSize = int32(100)
 		lru     = NewLRU(maxSize)
-		values  = make(map[string]string)
+		values  = map[string]string{
+			"key1": "value1",
+			"key2": "value2",
+			"key3": "value3",
+			"key4": "value4",
+			"key5": "value5",
+			"key6": "value6",
+			"key7": "value7",
+		}
 	)
-	values["key1"] = "value1"
-	values["key2"] = "value2"
-	values["key3"] = "value3"
-	values["key4"] = "value4"
-	values["key5"] = "value5"
-	values["key6"] = "value6"
-	values["key7"] = "value7"
+
 	var entries []entry
 	for k, v := range values {
 		entry := NewEntry(k, v, time.Now())
