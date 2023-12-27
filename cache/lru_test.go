@@ -12,7 +12,7 @@ func TestLRU(t *testing.T) {
 	key := "tom"
 	value := 123
 	lru.Put(key, value)
-	expected := lru.Get(key).value.(int)
+	expected := lru.Get(key).(int)
 	assert.Equal(t, expected, value)
 	assert.EqualValues(t, 1, lru.Size())
 

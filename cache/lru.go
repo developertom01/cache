@@ -90,7 +90,7 @@ func NewLRU(maxSize int32) *lru {
 	}
 }
 
-func (c *lru) Get(key any) *entry {
+func (c *lru) Get(key any) any {
 	if c.maxSize == 0 {
 		return nil
 	}
@@ -102,7 +102,7 @@ func (c *lru) Get(key any) *entry {
 		return nil
 	}
 	val := element.Value.(entry)
-	return &val
+	return val.value
 }
 
 func (c *lru) Put(key any, value any) {
